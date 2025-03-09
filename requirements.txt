@@ -1,0 +1,14 @@
+langchain-text-splitters
+langchain-community
+langgraph
+langchain-google-genai
+sentence-transformers
+faiss-cpu
+PyPDF2
+python-multipart
+fastapi
+uvicorn
+pydantic
+python-docx
+psycopg2
+streamlit
