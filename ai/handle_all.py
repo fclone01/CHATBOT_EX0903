@@ -127,7 +127,7 @@ async def upload_document_handler(
     #     )
 
 # Query documents function
-async def query_documents_handler(query: str, chat_id: str, top_k: int = 3, threshold: float = 0.5):
+async def query_documents_handler(query: str, chat_id: str, top_k: int = 10, threshold: float = 0.5):
     """Query documents and generate answer"""
     start_time = time.time()
 

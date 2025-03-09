@@ -41,7 +41,7 @@ def create_routes_be():
     @router.get("/chats/{chat_id}")
     def get_chat(chat_id: str, db: Session = Depends(get_db)):
         chat = db.query(Chat).filter(Chat.id == chat_id).first()
-        messages = db.query(Message).filter(Message.chat_id == chat_id).all()
+        messages = db.query(Message).filter(Message.chat_id == chat_id).order_by(Message.created_at).all()
         files = db.query(File).filter(File.chat_id == chat_id).all()
         chat.messages = messages
         chat.files = files
