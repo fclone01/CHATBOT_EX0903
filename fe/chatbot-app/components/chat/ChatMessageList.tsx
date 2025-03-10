@@ -1,7 +1,7 @@
-// components/chat/ChatMessageList.tsx
 import React from 'react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Message } from '@/types/chat';
+import ReactMarkdown from 'react-markdown';
 
 interface ChatMessageListProps {
   messages: Message[];
@@ -32,7 +32,9 @@ const ChatMessageList: React.FC<ChatMessageListProps> = ({ messages }) => {
                 {formatTime(msg.created_at)}
               </div>
             </div>
-            <div className="whitespace-pre-wrap text-sm">{msg.content}</div>
+            <div className="markdown-content text-sm">
+              <ReactMarkdown>{msg.content}</ReactMarkdown>
+            </div>
           </div>
         ))
       ) : (

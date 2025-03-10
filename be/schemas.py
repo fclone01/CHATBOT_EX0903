@@ -6,7 +6,7 @@ class MessageCreate(BaseModel):
     content: str
     role: Optional[str] = "user"
 
-class ChatCreate    (BaseModel):
+class ChatCreate(BaseModel):
     name: str
 
 class FileDelete(BaseModel):

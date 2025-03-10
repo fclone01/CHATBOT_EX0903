@@ -7,7 +7,7 @@ import { useChatService } from "@/services/chatService";
 import ChatSidebar from "@/components/chat/ChatSidebar";
 import ChatMain from "@/components/chat/ChatMain";
 
-export default function ChatIdPage({ params }: { params: { id: string } }) {
+export default  function ChatIdPage({ params  }: { params: { id: string } }) {
   // State management
   const [chats, setChats] = useState<Chat[]>([]);
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
@@ -32,12 +32,12 @@ export default function ChatIdPage({ params }: { params: { id: string } }) {
   });
 
   useEffect(() => {
-    if (params.id) {
-      fetchChatById(params.id);
+    if (params?.id) {
+      fetchChatById(params?.id);
     } else {
       fetchChats();
     }
-  }, [fetchChats, fetchChatById, params.id]);
+  }, [fetchChats, fetchChatById, params?.id]);
 
   const handleUploadFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!selectedChat || !e.target.files || e.target.files.length === 0) return;

@@ -127,8 +127,15 @@ async def upload_document_handler(
     #     )
 
 # Query documents function
-async def query_documents_handler(query: str, chat_id: str, top_k: int = 10, threshold: float = 0.5):
+async def query_documents_handler(chat_all_infor: dict, chat_id: str, top_k: int = 10, threshold: float = 0.5):
+    # print(chat_all_infor)
     """Query documents and generate answer"""
+    """
+        Step1: Rewrite the query to create 2 more questions
+    """
+
+    question_format =  llm_service.create_question_template(chat_all_infor)
+
     start_time = time.time()
 
     
@@ -137,7 +144,7 @@ async def query_documents_handler(query: str, chat_id: str, top_k: int = 10, thr
     
     try:
         retrieved_docs = index_manager.search(
-            query=query,
+            query=question_format,
             chat_id=chat_id,
             top_k=top_k,
             threshold=threshold
@@ -145,14 +152,14 @@ async def query_documents_handler(query: str, chat_id: str, top_k: int = 10, thr
         
         if not retrieved_docs:
             return {
-                "query": query,
+                "query": question_format,
                 "answer": "No relevant information found in documents.",
                 "retrieved_documents": [],
                 "processing_time": time.time() - start_time,
                 "chat_id": chat_id
             }        
         # Generate answer
-        answer = llm_service.generate_answer(query, retrieved_docs)
+        answer = llm_service.generate_answer(question_format, retrieved_docs)
         
         # Convert results to response format
         retrieved_doc_responses = []
@@ -168,7 +175,7 @@ async def query_documents_handler(query: str, chat_id: str, top_k: int = 10, thr
                 )
             )
         return {
-            "query": query,
+            "query": question_format,
             "answer": answer,
             "retrieved_documents": retrieved_doc_responses,
             "processing_time": time.time() - start_time,

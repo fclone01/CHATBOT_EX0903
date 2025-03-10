@@ -64,12 +64,36 @@ def create_routes_be():
         
         # Bot reply simulation
         if role == "user":
-            all_messages = db.query(Message).filter(Message.chat_id == chat_id).order_by(Message.created_at).all()
-
+            # Get all chat information
+            messages = db.query(Message).filter(Message.chat_id == chat_id).order_by(Message.created_at).all()
+            files = db.query(File).filter(File.chat_id == chat_id).all()
             
+            # Convert SQLAlchemy objects to dictionaries
+            chat_dict = {
+                    "id": chat.id,
+                    "name": chat.name,  # Assuming these fields exist
+                    # "created_at": chat.created_at,
+                    # Add other chat fields as needed
+                    "messages": [
+                        {
+                            "content": message.content,
+                            # "created_at": message.created_at,
+                            "role": message.role,
+                        } for message in messages
+                    ],
+                    "files": [
+                        {
+                            "file_name": file.file_name,
+                            "description": file.description,
+                            # Add other file fields
+                        } for file in files
+                    ]
+                }   
+            
+            # End of conversion  
 
 
-            bot_reply_content = (await ai_handle_all.query_documents_handler(query = content, chat_id=chat_id))["answer"]
+            bot_reply_content = (await ai_handle_all.query_documents_handler(chat_all_infor= chat_dict, chat_id=chat_id))["answer"]
             if bot_reply_content:
                bot_reply =  Message(chat_id=chat_id, content=bot_reply_content, role="ai")
             # bot_reply = Message(chat_id=chat_id, content=f"Bot trả lời cho: '{content}'", role="ai")
@@ -106,9 +130,12 @@ def create_routes_be():
         if not db_file:
             raise HTTPException(status_code=404, detail="File not found")
 
-        # file_path = os.path.join(UPLOAD_FOLDER, db_file.file_name)
-        # if os.path.exists(file_path):
-        #     os.remove(file_path)
+        file_name = db_file.embedding_infor["file_name"]
+        file_path = os.path.join(UPLOAD_FOLDER, file_name)
+        if os.path.exists(file_path):
+            os.remove(file_path)
+        
+        index_manager.delete_file(file_name=file_name)
 
         db.delete(db_file)
         db.commit()
